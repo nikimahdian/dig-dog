@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Test-Path \"C:\\Users\\nikim\\OneDrive\\Desktop\\proj4\\kenney_tower-defense-top-down\")",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(gradle wrapper:*)",
+      "Bash(.gradlew.bat build)",
+      "Bash(./gradlew:*)",
+      "Bash(chmod:*)",
+      "WebFetch(domain:services.gradle.org)",
+      "Bash(java:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(py:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

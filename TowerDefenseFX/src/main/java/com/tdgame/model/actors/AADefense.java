@@ -1,0 +1,129 @@
+package com.tdgame.model.actors;
+
+import com.tdgame.util.Math2D;
+import com.tdgame.util.RNG;
+
+import java.util.List;
+
+/**
+ * Anti-aircraft defense system.
+ * Can only target aircraft with a hit chance percentage.
+ */
+public class AADefense {
+    private double x, y;
+    private double hitChance;
+    private double range;
+    private int hp;
+    private int maxHp;
+    private int spriteIndex;
+    
+    private double fireCooldown = 0.0;
+    private final double fireRate = 1.0; // 1 shot per second
+    private Aircraft currentTarget = null;
+    private boolean alive = true;
+    
+    public AADefense(double hitChance, double range, int hp, int spriteIndex) {
+        this.hitChance = hitChance;
+        this.range = range;
+        this.hp = hp;
+        this.maxHp = hp;
+        this.spriteIndex = spriteIndex;
+    }
+    
+    /**
+     * Update AA defense state
+     */
+    public void update(double deltaTime, List<Enemy> enemies) {
+        if (!alive) return;
+        
+        fireCooldown -= deltaTime;
+        
+        // Find aircraft targets
+        if (currentTarget == null || !isValidTarget(currentTarget)) {
+            acquireTarget(enemies);
+        }
+        
+        // Fire at aircraft if ready
+        if (currentTarget != null && fireCooldown <= 0) {
+            fire(currentTarget);
+            fireCooldown = 1.0 / fireRate;
+        }
+    }
+    
+    /**
+     * Acquire aircraft target
+     */
+    private void acquireTarget(List<Enemy> enemies) {
+        currentTarget = null;
+        double bestPriority = -1;
+        
+        for (Enemy enemy : enemies) {
+            if (enemy instanceof Aircraft && isValidTarget((Aircraft)enemy)) {
+                double distance = Math2D.distance(x, y, enemy.getX(), enemy.getY());
+                if (distance <= range) {
+                    double priority = enemy.getPathProgress();
+                    if (priority > bestPriority) {
+                        bestPriority = priority;
+                        currentTarget = (Aircraft)enemy;
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Check if aircraft is a valid target
+     */
+    private boolean isValidTarget(Aircraft aircraft) {
+        return aircraft != null && aircraft.isAlive() && !aircraft.hasReachedEnd();
+    }
+    
+    /**
+     * Fire at aircraft with hit chance
+     */
+    private void fire(Aircraft target) {
+        if (target == null) return;
+        
+        // Roll for hit chance
+        if (RNG.nextBoolean(hitChance)) {
+            target.takeDamage(999); // AA weapons are lethal to aircraft
+        }
+    }
+    
+    /**
+     * Take damage (from tank attacks)
+     */
+    public void takeDamage(int damage) {
+        if (!alive) return;
+        
+        hp -= damage;
+        if (hp <= 0) {
+            hp = 0;
+            alive = false;
+            onDestroyed();
+        }
+    }
+    
+    /**
+     * Called when AA defense is destroyed
+     */
+    private void onDestroyed() {
+        // Visual/audio feedback for AA destruction
+    }
+    
+    public void setPosition(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    // Getters
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getHitChance() { return hitChance; }
+    public double getRange() { return range; }
+    public int getHp() { return hp; }
+    public int getMaxHp() { return maxHp; }
+    public int getSpriteIndex() { return spriteIndex; }
+    public boolean isAlive() { return alive; }
+    public Aircraft getCurrentTarget() { return currentTarget; }
+}

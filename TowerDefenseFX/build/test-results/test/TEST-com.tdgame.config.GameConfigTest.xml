@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tdgame.config.GameConfigTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-09-03T10:40:32" hostname="NIKI" time="0.561">
+  <properties/>
+  <testcase name="testLoadConfiguration()" classname="com.tdgame.config.GameConfigTest" time="0.561"/>
+  <system-out><![CDATA[Configuration loaded successfully!
+Starting money: 150
+Grid size: 20x12
+Fast tower cost: 60
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

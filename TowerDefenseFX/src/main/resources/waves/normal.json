@@ -1,0 +1,49 @@
+{
+  "waves": [
+    { 
+      "delay": 0,  
+      "enemies": [ 
+        {"type":"soldier","count":10,"gap":0.6} 
+      ] 
+    },
+    { 
+      "delay": 12, 
+      "enemies": [ 
+        {"type":"soldier","count":12,"gap":0.5},
+        {"type":"tank","count":1,"gap":1.8} 
+      ] 
+    },
+    { 
+      "delay": 25, 
+      "enemies": [ 
+        {"type":"soldier","count":15,"gap":0.4},
+        {"type":"tank","count":2,"gap":1.2} 
+      ],
+      "aircraftChance": 0.25 
+    },
+    { 
+      "delay": 45, 
+      "enemies": [ 
+        {"type":"soldier","count":18,"gap":0.3},
+        {"type":"tank","count":2,"gap":1.0} 
+      ],
+      "aircraftChance": 0.4 
+    },
+    { 
+      "delay": 65, 
+      "enemies": [ 
+        {"type":"soldier","count":20,"gap":0.25},
+        {"type":"tank","count":3,"gap":0.8} 
+      ],
+      "aircraftChance": 0.5 
+    },
+    { 
+      "delay": 85, 
+      "enemies": [ 
+        {"type":"soldier","count":25,"gap":0.2},
+        {"type":"tank","count":4,"gap":0.6} 
+      ],
+      "aircraftChance": 0.6 
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+
+Objective:
+Create a 2D grid layout for a tower defense game, using the provided tiles. The layout should represent the path for enemies, ground for tower placements, towers, projectiles, and obstacles.
+
+Instructions:
+
+Paths and Ground (Tiles):
+
+Sprite Sheet Location: All tile images (PNGs) are located in the folder:
+C:\Users\nikim\OneDrive\Desktop\proj4\kenney_tower-defense-top-down\PNG
+
+Tile Mapping:
+
+Path (Brown Tiles): Use the brown tiles for the enemy path. These are represented by the tiles towerDefense_tile002.png and towerDefense_tile003.png.
+
+Ground (Green Tiles): Use green tiles (like towerDefense_tile005.png) for the ground areas.
+
+Tower Placement:
+
+Towers (Red Turret Tiles): Use turret tiles (e.g., towerDefense_tile004.png) to represent the towers along the path.
+
+Obstacles:
+
+Obstacle Tiles: Use rock and tree tiles from the sprite sheet to create obstacles along the path or around the grid.
+
+Projectiles:
+
+Missile Tiles: Represent projectiles using missile or rocket tiles from the sprite sheet.
+
+Final Layout:
+
+The final game layout will resemble the sample image, which is located at:
+C:\Users\nikim\OneDrive\Desktop\proj4\kenney_tower-defense-top-down\Sample.png
+
+UI Elements:
+
+The UI elements like health, coins, round, and timer are positioned outside the game grid, to the right of the grid, as in the Sample.png image.
+
+Tile Naming and Placement:
+
+Ensure the tile file names (like towerDefense_tile001.png, towerDefense_tile002.png, etc.) are used accurately to represent each tile in the grid.
+
+Expected Output:
+
+The resulting image should be saved as Sample_new.png at:
+C:\Users\nikim\OneDrive\Desktop\proj4\kenney_tower-defense-top-down\Sample_new.png
+
+The generated image should match the layout shown in Sample.png, including the path, towers, projectiles, and UI elements positioned correctly.
+
+Instructions for Saving:
+
+After generating the grid, ensure the image is saved with the correct name in the Sample.png location, ensuring the output is properly placed.
