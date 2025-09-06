@@ -7,11 +7,15 @@ import com.tdgame.model.systems.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Region;
 import javafx.scene.Node;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.paint.Color;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.DropShadow;
 
 /**
  * Game HUD displaying money, waves, castle HP, timer and other game statistics.
@@ -50,75 +54,34 @@ public class HUD {
      * Initialize the HUD UI components
      */
     private void initializeUI() {
-        root = new HBox(20);
-        root.setPadding(new Insets(10));
-        root.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-text-fill: white;");
+        root = new HBox(30);
+        root.setPadding(new Insets(15));
+        root.setStyle("""
+            -fx-background: linear-gradient(to right, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
+            -fx-border-color: #4a90e2;
+            -fx-border-width: 0 0 3 0;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
+        """);
         
         // Money display
-        VBox moneyBox = new VBox(5);
-        Label moneyTitle = new Label("Money");
-        moneyTitle.setFont(Font.font(12));
-        moneyTitle.setTextFill(Color.WHITE);
+        VBox moneyBox = createInfoBox("💰 Money", "$" + currentMoney, Color.GOLD, "#f39c12");
+        moneyLabel = getValueLabel(moneyBox);
         
-        moneyLabel = new Label("$" + currentMoney);
-        moneyLabel.setFont(Font.font(16));
-        moneyLabel.setTextFill(Color.GOLD);
-        
-        moneyBox.getChildren().addAll(moneyTitle, moneyLabel);
-        
-        // Waves display
-        VBox wavesBox = new VBox(5);
-        Label wavesTitle = new Label("Waves");
-        wavesTitle.setFont(Font.font(12));
-        wavesTitle.setTextFill(Color.WHITE);
-        
-        wavesLabel = new Label(currentWave + "/" + totalWaves);
-        wavesLabel.setFont(Font.font(16));
-        wavesLabel.setTextFill(Color.LIGHTBLUE);
-        
-        wavesBox.getChildren().addAll(wavesTitle, wavesLabel);
+        // Waves display  
+        VBox wavesBox = createInfoBox("🌊 Wave", currentWave + "/" + totalWaves, Color.LIGHTBLUE, "#3498db");
+        wavesLabel = getValueLabel(wavesBox);
         
         // Timer display
-        VBox timerBox = new VBox(5);
-        Label timerTitle = new Label("Time");
-        timerTitle.setFont(Font.font(12));
-        timerTitle.setTextFill(Color.WHITE);
-        
-        timerLabel = new Label("0:00");
-        timerLabel.setFont(Font.font(16));
-        timerLabel.setTextFill(Color.WHITE);
-        
-        timerBox.getChildren().addAll(timerTitle, timerLabel);
-        
-        // Leak meter
-        VBox leakBox = new VBox(5);
-        Label leakTitle = new Label("Enemy Leakage");
-        leakTitle.setFont(Font.font(12));
-        leakTitle.setTextFill(Color.WHITE);
-        
-        leakLabel = new Label("0.0% / 10.0%");
-        leakLabel.setFont(Font.font(14));
-        leakLabel.setTextFill(Color.WHITE);
-        
-        leakProgressBar = new ProgressBar(0.0);
-        leakProgressBar.setPrefWidth(150);
-        leakProgressBar.setStyle("-fx-accent: red;");
-        
-        leakBox.getChildren().addAll(leakTitle, leakLabel, leakProgressBar);
+        VBox timerBox = createInfoBox("⏱️ Time", "0:00", Color.WHITE, "#95a5a6");
+        timerLabel = getValueLabel(timerBox);
         
         // Income display
-        VBox incomeBox = new VBox(5);
-        Label incomeTitle = new Label("Income");
-        incomeTitle.setFont(Font.font(12));
-        incomeTitle.setTextFill(Color.WHITE);
+        VBox incomeBox = createInfoBox("📈 Income", "+" + config.getMoneyIncomePerSec() + "/sec", Color.LIGHTGREEN, "#27ae60");
         
-        Label incomeLabel = new Label("+" + config.getMoneyIncomePerSec() + "/sec");
-        incomeLabel.setFont(Font.font(14));
-        incomeLabel.setTextFill(Color.LIGHTGREEN);
+        // Leak meter with progress bar
+        VBox leakBox = createLeakMeter();
         
-        incomeBox.getChildren().addAll(incomeTitle, incomeLabel);
-        
-        root.getChildren().addAll(moneyBox, wavesBox, timerBox, leakBox, incomeBox);
+        root.getChildren().addAll(moneyBox, wavesBox, timerBox, incomeBox, leakBox);
     }
     
     /**
@@ -244,6 +207,88 @@ public class HUD {
         updateLeakDisplay();
     }
     
+    /**
+     * Create a styled info box with title and value
+     */
+    private VBox createInfoBox(String title, String value, Color valueColor, String bgColor) {
+        VBox box = new VBox(8);
+        box.setAlignment(Pos.CENTER);
+        box.setPadding(new Insets(12));
+        box.setStyle(String.format("""
+            -fx-background-color: %s;
+            -fx-background-radius: 8;
+            -fx-border-color: rgba(255,255,255,0.3);
+            -fx-border-width: 1;
+            -fx-border-radius: 8;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);
+        """, bgColor));
+        
+        Label titleLabel = new Label(title);
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        titleLabel.setTextFill(Color.WHITE);
+        titleLabel.setEffect(new DropShadow(2, Color.BLACK));
+        
+        VBox valueContainer = new VBox();
+        valueContainer.setAlignment(Pos.CENTER);
+        Label valueLabel = new Label(value);
+        valueLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        valueLabel.setTextFill(valueColor);
+        valueLabel.setEffect(new DropShadow(2, Color.BLACK));
+        
+        valueContainer.getChildren().add(valueLabel);
+        box.getChildren().addAll(titleLabel, valueContainer);
+        
+        return box;
+    }
+    
+    /**
+     * Get the value label from an info box
+     */
+    private Label getValueLabel(VBox infoBox) {
+        VBox valueContainer = (VBox) infoBox.getChildren().get(1);
+        return (Label) valueContainer.getChildren().get(0);
+    }
+    
+    /**
+     * Create the leak meter with progress bar
+     */
+    private VBox createLeakMeter() {
+        VBox leakBox = new VBox(8);
+        leakBox.setAlignment(Pos.CENTER);
+        leakBox.setPadding(new Insets(12));
+        leakBox.setStyle("""
+            -fx-background-color: #e74c3c;
+            -fx-background-radius: 8;
+            -fx-border-color: rgba(255,255,255,0.3);
+            -fx-border-width: 1;
+            -fx-border-radius: 8;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);
+        """);
+        
+        Label leakTitle = new Label("🛡️ Castle Defense");
+        leakTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        leakTitle.setTextFill(Color.WHITE);
+        leakTitle.setEffect(new DropShadow(2, Color.BLACK));
+        
+        leakLabel = new Label("0.0% / 10.0%");
+        leakLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        leakLabel.setTextFill(Color.WHITE);
+        leakLabel.setEffect(new DropShadow(2, Color.BLACK));
+        
+        leakProgressBar = new ProgressBar(0.0);
+        leakProgressBar.setPrefWidth(120);
+        leakProgressBar.setPrefHeight(12);
+        leakProgressBar.setStyle("""
+            -fx-accent: #2ecc71;
+            -fx-background-color: rgba(255,255,255,0.2);
+            -fx-border-radius: 6;
+            -fx-background-radius: 6;
+        """);
+        
+        leakBox.getChildren().addAll(leakTitle, leakLabel, leakProgressBar);
+        return leakBox;
+    }
+
     public Node getRoot() {
         return root;
     }

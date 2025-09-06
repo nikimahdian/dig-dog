@@ -30,7 +30,7 @@ public class SpeedBump {
         this.duration = duration;
         this.remainingTime = duration;
         this.spriteIndex = spriteIndex;
-        this.effectRadius = 24; // Half tile size for effect area
+        this.effectRadius = 48; // Larger radius to cover both lanes
     }
     
     /**

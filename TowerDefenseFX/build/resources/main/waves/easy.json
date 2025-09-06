@@ -3,36 +3,69 @@
     { 
       "delay": 0,  
       "enemies": [ 
-        {"type":"soldier","count":8,"gap":0.8} 
-      ] 
-    },
-    { 
-      "delay": 15, 
-      "enemies": [ 
-        {"type":"soldier","count":10,"gap":0.6}
-      ] 
-    },
-    { 
-      "delay": 30, 
-      "enemies": [ 
-        {"type":"soldier","count":6,"gap":0.5},
-        {"type":"tank","count":1,"gap":2.0} 
-      ] 
-    },
-    { 
-      "delay": 50, 
-      "enemies": [ 
-        {"type":"soldier","count":12,"gap":0.4}
+        {"type":"soldier","count":8,"gap":0.8},
+        {"type":"soldierFast","count":5,"gap":0.6} 
       ],
-      "aircraftChance": 0.3 
+      "aircraftChance": 0.8
     },
     { 
-      "delay": 70, 
+      "delay": 20, 
       "enemies": [ 
-        {"type":"soldier","count":8,"gap":0.3},
-        {"type":"tank","count":2,"gap":1.5} 
+        {"type":"soldier","count":10,"gap":0.6},
+        {"type":"soldierFast","count":8,"gap":0.4},
+        {"type":"soldierHeavy","count":3,"gap":1.0}
       ],
-      "aircraftChance": 0.4 
+      "aircraftChance": 0.6
+    },
+    { 
+      "delay": 45, 
+      "enemies": [ 
+        {"type":"soldier","count":8,"gap":0.5},
+        {"type":"soldierFast","count":10,"gap":0.3},
+        {"type":"soldierHeavy","count":5,"gap":0.8},
+        {"type":"tank","count":2,"gap":2.0} 
+      ],
+      "aircraftChance": 0.4
+    },
+    { 
+      "delay": 75, 
+      "enemies": [ 
+        {"type":"soldier","count":12,"gap":0.4},
+        {"type":"soldierFast","count":15,"gap":0.25},
+        {"type":"soldierHeavy","count":6,"gap":0.7},
+        {"type":"tank","count":3,"gap":1.5}
+      ],
+      "aircraftChance": 0.5 
+    },
+    { 
+      "delay": 110, 
+      "enemies": [ 
+        {"type":"soldier","count":15,"gap":0.3},
+        {"type":"soldierFast","count":18,"gap":0.2},
+        {"type":"soldierHeavy","count":8,"gap":0.6},
+        {"type":"tank","count":4,"gap":1.2} 
+      ],
+      "aircraftChance": 0.6 
+    },
+    { 
+      "delay": 150, 
+      "enemies": [ 
+        {"type":"soldier","count":18,"gap":0.25},
+        {"type":"soldierFast","count":22,"gap":0.15},
+        {"type":"soldierHeavy","count":10,"gap":0.5},
+        {"type":"tank","count":5,"gap":1.0} 
+      ],
+      "aircraftChance": 0.7 
+    },
+    { 
+      "delay": 190, 
+      "enemies": [ 
+        {"type":"soldier","count":20,"gap":0.2},
+        {"type":"soldierFast","count":25,"gap":0.1},
+        {"type":"soldierHeavy","count":12,"gap":0.4},
+        {"type":"tank","count":6,"gap":0.8} 
+      ],
+      "aircraftChance": 0.8 
     }
   ]
 }

@@ -15,12 +15,18 @@ public class Tile {
     
     private final TileType type;
     private final int spriteIndex;
+    private final int rotation;
     private final boolean walkable;
     private final boolean buildable;
     
     public Tile(TileType type, int spriteIndex) {
+        this(type, spriteIndex, 0);
+    }
+    
+    public Tile(TileType type, int spriteIndex, int rotation) {
         this.type = type;
         this.spriteIndex = spriteIndex;
+        this.rotation = rotation;
         
         // Set properties based on type
         this.walkable = (type == TileType.GROUND || type == TileType.PATH || type == TileType.CASTLE);
@@ -33,6 +39,10 @@ public class Tile {
     
     public int getSpriteIndex() {
         return spriteIndex;
+    }
+    
+    public int getRotation() {
+        return rotation;
     }
     
     public boolean isWalkable() {

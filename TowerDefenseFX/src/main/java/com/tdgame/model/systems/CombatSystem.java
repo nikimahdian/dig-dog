@@ -74,13 +74,29 @@ public class CombatSystem {
             
             // Update tower-specific projectiles
             if (tower instanceof FastTower fastTower) {
-                fastTower.updateProjectiles(deltaTime);
-                projectiles.addAll(fastTower.getProjectiles());
-                fastTower.getProjectiles().clear();
+                // Don't clear - let tower manage its own projectiles
+                List<Projectile> towerProjectiles = fastTower.getProjectiles();
+                for (Projectile projectile : towerProjectiles) {
+                    if (!projectiles.contains(projectile)) {
+                        projectiles.add(projectile);
+                    }
+                }
             } else if (tower instanceof PowerTower powerTower) {
-                powerTower.updateProjectiles(deltaTime);
-                projectiles.addAll(powerTower.getProjectiles());
-                powerTower.getProjectiles().clear();
+                // Don't clear - let tower manage its own projectiles  
+                List<Projectile> towerProjectiles = powerTower.getProjectiles();
+                for (Projectile projectile : towerProjectiles) {
+                    if (!projectiles.contains(projectile)) {
+                        projectiles.add(projectile);
+                    }
+                }
+            } else if (tower instanceof TankTower tankTower) {
+                // Update and collect tank tower projectiles like other towers
+                List<Projectile> tankProjectiles = tankTower.getFiredProjectiles();
+                for (Projectile projectile : tankProjectiles) {
+                    if (!projectiles.contains(projectile)) {
+                        projectiles.add(projectile);
+                    }
+                }
             }
         }
     }
@@ -118,12 +134,22 @@ public class CombatSystem {
     }
     
     /**
-     * Update tank attacks on towers and AA defenses
+     * Update tank attacks on towers, AA defenses, and other enemies
      */
     private void updateTankAttacks(double deltaTime) {
         for (Enemy enemy : enemies) {
             if (enemy instanceof Tank tank && enemy.isAlive()) {
-                tank.updateNearbyDefenses(towers, aaDefenses);
+                // Update nearby targets for tanks
+                tank.updateNearbyEnemies(enemies);
+                tank.updateNearbyTowers(towers);
+                tank.updateNearbyAA(aaDefenses);
+                
+                // Add tank projectiles to main projectile list for rendering
+                for (Projectile tankProjectile : tank.getFiredProjectiles()) {
+                    if (!projectiles.contains(tankProjectile)) {
+                        projectiles.add(tankProjectile);
+                    }
+                }
             }
         }
     }

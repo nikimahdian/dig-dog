@@ -17,10 +17,23 @@ public class GameConfig {
         this.levelName = levelName;
         this.difficulty = difficulty;
         
-        // Load configuration files
-        this.balance = Json.loadFromResource("config/balance.json", Balance.class);
-        this.levelData = Json.loadFromResource("levels/" + levelName + ".json", LevelData.class);
-        this.waveData = Json.loadFromResource("waves/" + difficulty + ".json", WaveData.class);
+        try {
+            // Load configuration files
+            System.out.println("Loading balance.json...");
+            this.balance = Json.loadFromResource("config/balance.json", Balance.class);
+            
+            System.out.println("Loading level: " + levelName + ".json...");
+            this.levelData = Json.loadFromResource("levels/" + levelName + ".json", LevelData.class);
+            
+            System.out.println("Loading waves: " + difficulty + ".json...");
+            this.waveData = Json.loadFromResource("waves/" + difficulty + ".json", WaveData.class);
+            
+            System.out.println("All configuration files loaded successfully!");
+        } catch (Exception e) {
+            System.err.println("ERROR loading configuration: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
     
     public static GameConfig load(String levelName, String difficulty) {

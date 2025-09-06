@@ -1,7 +1,7 @@
 {
   "money": { 
-    "start": 150, 
-    "incomePerSec": 3 
+    "start": 300, 
+    "incomePerSec": 8 
   },
   "towers": {
     "fast":   { 
@@ -41,55 +41,123 @@
     },
     "bomb":      { 
       "cost": 50, 
-      "damage": 80, 
-      "radius": 1.2 
+      "damage": 120, 
+      "radius": 1.5 
     }
   },
   "enemies": {
     "soldier":  { 
-      "hp": 35,  
-      "speed": 2.2, 
+      "hp": 40,  
+      "speed": 1.0, 
       "power": 1,
-      "spriteIndex": 144
+      "spriteIndex": 247
+    },
+    "soldierFast":  { 
+      "hp": 25,  
+      "speed": 1.6, 
+      "power": 1,
+      "spriteIndex": 245
+    },
+    "soldierHeavy":  { 
+      "hp": 60,  
+      "speed": 0.7, 
+      "power": 1,
+      "spriteIndex": 248
     },
     "tank":     { 
-      "hp": 220, 
-      "speed": 1.2, 
-      "power": 4, 
-      "dpsVsDefenses": 10,
-      "spriteIndex": 134
+      "hp": 260, 
+      "speed": 0.7, 
+      "power": 2, 
+      "dpsVsDefenses": 12,
+      "range": 3,
+      "fireRate": 1.0,
+      "spriteIndex": 269
     },
     "aircraft": { 
-      "speed": 7.0, 
+      "speed": 2.5, 
       "power": 3,
-      "spriteIndex": 129
+      "spriteIndex": 271
+    }
+  },
+  "towers": {
+    "fast":   { 
+      "cost": 50,  
+      "range": 5.0, 
+      "rpm": 120, 
+      "damage": 8,
+      "hp": 100
+    },
+    "power":  { 
+      "cost": 80, 
+      "range": 4.0, 
+      "rpm": 60, 
+      "damage": 25, 
+      "hp": 220
+    },
+    "tank":  { 
+      "cost": 120, 
+      "range": 4.5, 
+      "rpm": 80, 
+      "damage": 50, 
+      "hp": 350
+    }
+  },
+  "aa": {
+    "aa60": { 
+      "cost": 90,  
+      "hitChance": 0.60,
+      "range": 5.0,
+      "hp": 80
+    },
+    "aa80": { 
+      "cost": 140, 
+      "hitChance": 0.80,
+      "range": 5.5,
+      "hp": 100
     }
   },
   "projectiles": {
     "towerShot": {
-      "speed": 8.0,
-      "spriteIndex": 85
+      "speed": 300.0,
+      "spriteIndex": 272
+    }
+  },
+  "placeables": {
+    "speedBump": { 
+      "cost": 25, 
+      "slowPct": 0.5, 
+      "durationSec": 12,
+      "spriteIndex": 40
+    },
+    "bomb":      { 
+      "cost": 40, 
+      "damage": 50, 
+      "radius": 1.0,
+      "spriteIndex": 92
     }
   },
   "rules": { 
     "leakPctDefeat": 0.10 
   },
   "sprites": {
-    "ground": [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    "path": [57, 58, 59, 60, 61, 62, 63, 64, 65],
-    "blocked": [15, 16, 17, 18, 19],
+    "ground": [74, 71, 76, 79, 123],
+    "path": [2, 4, 9, 5],
+    "sand": [29],
+    "blocked": [13, 14, 37],
     "castle": [99],
+    "rock": [59],
     "towers": {
-      "fast": 181,
-      "power": 205
+      "fast": 249,
+      "power": 250,
+      "tank": 269
     },
     "aa": {
-      "aa60": 249,
-      "aa80": 273
+      "aa60": 205,
+      "aa80": 206
     },
     "placeables": {
-      "speedBump": 45,
-      "bomb": 37
+      "speedBump": 40,
+      "bomb": 91
     }
   }
 }

@@ -21,6 +21,7 @@ public class AADefense {
     private final double fireRate = 1.0; // 1 shot per second
     private Aircraft currentTarget = null;
     private boolean alive = true;
+    private com.tdgame.model.grid.BuildSlot buildSlot = null;
     
     public AADefense(double hitChance, double range, int hp, int spriteIndex) {
         this.hitChance = hitChance;
@@ -60,7 +61,8 @@ public class AADefense {
         for (Enemy enemy : enemies) {
             if (enemy instanceof Aircraft && isValidTarget((Aircraft)enemy)) {
                 double distance = Math2D.distance(x, y, enemy.getX(), enemy.getY());
-                if (distance <= range) {
+                double pixelRange = range * 64; // Convert tile range to pixels
+                if (distance <= pixelRange) {
                     double priority = enemy.getPathProgress();
                     if (priority > bestPriority) {
                         bestPriority = priority;
@@ -84,9 +86,14 @@ public class AADefense {
     private void fire(Aircraft target) {
         if (target == null) return;
         
+        System.out.println("🎯 AA firing at Aircraft! Hit chance: " + String.format("%.0f%%", hitChance * 100));
+        
         // Roll for hit chance
         if (RNG.nextBoolean(hitChance)) {
             target.takeDamage(999); // AA weapons are lethal to aircraft
+            System.out.println("💥 AA HIT! Aircraft destroyed!");
+        } else {
+            System.out.println("❌ AA MISS! Aircraft continues...");
         }
     }
     
@@ -108,12 +115,19 @@ public class AADefense {
      * Called when AA defense is destroyed
      */
     private void onDestroyed() {
-        // Visual/audio feedback for AA destruction
+        // Clear the build slot so it becomes available again
+        if (buildSlot != null) {
+            buildSlot.clearSlot();
+        }
     }
     
     public void setPosition(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+    
+    public void setBuildSlot(com.tdgame.model.grid.BuildSlot buildSlot) {
+        this.buildSlot = buildSlot;
     }
     
     // Getters

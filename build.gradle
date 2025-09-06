@@ -1,0 +1,33 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+javafx {
+    version = "17.0.2"
+    modules = [ 'javafx.controls', 'javafx.base' ]
+}
+
+application {
+    mainClass = 'game.Main'
+}
+
+dependencies {
+    // No external dependencies beyond JavaFX
+}
+
+tasks.named('run') {
+    // Ensure proper JavaFX module path
+    systemProperty 'prism.order', 'sw'
+    systemProperty 'javafx.animation.fullspeed', 'true'
+}

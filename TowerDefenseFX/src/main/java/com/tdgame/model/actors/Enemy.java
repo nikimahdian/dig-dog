@@ -22,6 +22,10 @@ public abstract class Enemy {
     protected boolean alive = true;
     protected boolean reachedEnd = false;
     
+    // Lane system for dual-lane movement
+    protected int lane = 0; // 0 = top lane, 1 = bottom lane  
+    protected double laneOffset = 16; // Pixels offset from center path
+    
     // Status effects
     protected double slowMultiplier = 1.0;
     protected double slowDuration = 0.0;
@@ -44,6 +48,43 @@ public abstract class Enemy {
             Math2D.Point startPos = path.getPositionAt(0.0);
             this.x = startPos.x;
             this.y = startPos.y;
+            
+            // Apply lane offset
+            applyLaneOffset();
+        }
+    }
+    
+    /**
+     * Set which lane this enemy uses (0=top, 1=bottom)
+     */
+    public void setLane(int lane) {
+        this.lane = lane;
+        if (path != null) {
+            applyLaneOffset();
+        }
+    }
+    
+    /**
+     * Apply lane offset to current position
+     */
+    private void applyLaneOffset() {
+        if (path == null) return;
+        
+        // Calculate perpendicular offset based on lane
+        double offsetDistance = (lane == 0) ? -laneOffset : laneOffset;
+        
+        // Get current position and next position to determine direction
+        Math2D.Point currentPos = path.getPositionAt(pathProgress);
+        Math2D.Point nextPos = path.getPositionAt(Math.min(1.0, pathProgress + 0.01));
+        
+        if (Math2D.distance(currentPos.x, currentPos.y, nextPos.x, nextPos.y) > 0.1) {
+            // Calculate perpendicular direction
+            double pathAngle = Math2D.angle(currentPos.x, currentPos.y, nextPos.x, nextPos.y);
+            double perpAngle = pathAngle + Math.PI / 2; // 90 degrees perpendicular
+            
+            // Apply offset
+            this.x = currentPos.x + Math.cos(perpAngle) * offsetDistance;
+            this.y = currentPos.y + Math.sin(perpAngle) * offsetDistance;
         }
     }
     
@@ -70,22 +111,88 @@ public abstract class Enemy {
     }
     
     /**
-     * Move along the assigned path
+     * Move along the assigned path with lane offset
      */
     protected void moveAlongPath(double deltaTime) {
         if (path == null) return;
         
-        double distance = currentSpeed * deltaTime;
+        // Apply slow effect to current speed
+        currentSpeed = baseSpeed * slowMultiplier;
+        
+        // Smoother movement calculation
+        double pixelsPerSecond = currentSpeed * 64; // Convert tiles/sec to pixels/sec
+        double distance = pixelsPerSecond * deltaTime;
         double pathLength = path.getTotalLength();
         
         if (pathLength > 0) {
-            pathProgress += distance / pathLength;
-            pathProgress = Math.min(1.0, pathProgress);
+            double progressIncrement = distance / pathLength;
+            pathProgress += progressIncrement;
+            pathProgress = Math.min(1.0, Math.max(0.0, pathProgress));
             
-            Math2D.Point newPos = path.getPositionAt(pathProgress);
-            this.x = newPos.x;
-            this.y = newPos.y;
+            // Get center path position
+            Math2D.Point centerPos = path.getPositionAt(pathProgress);
+            
+            // Apply lane offset to get actual position
+            applyLaneOffsetToPosition(centerPos);
         }
+    }
+    
+    /**
+     * Apply lane offset to a specific position with smooth corner handling
+     */
+    private void applyLaneOffsetToPosition(Math2D.Point centerPos) {
+        // Calculate perpendicular offset based on lane
+        double offsetDistance = (lane == 0) ? -laneOffset : laneOffset;
+        
+        // Get path direction using a larger lookahead for stability
+        Math2D.Point prevPos = path.getPositionAt(Math.max(0.0, pathProgress - 0.02));
+        Math2D.Point nextPos = path.getPositionAt(Math.min(1.0, pathProgress + 0.02));
+        
+        double pathDistance = Math2D.distance(prevPos.x, prevPos.y, nextPos.x, nextPos.y);
+        
+        if (pathDistance > 1.0) {
+            // Calculate smooth path direction
+            double pathAngle = Math2D.angle(prevPos.x, prevPos.y, nextPos.x, nextPos.y);
+            double perpAngle = pathAngle + Math.PI / 2; // 90 degrees perpendicular
+            
+            // Reduce offset on sharp turns for smoother movement
+            double turnSharpness = calculateTurnSharpness();
+            double adjustedOffset = offsetDistance * (1.0 - turnSharpness * 0.5);
+            
+            // Apply offset
+            this.x = centerPos.x + Math.cos(perpAngle) * adjustedOffset;
+            this.y = centerPos.y + Math.sin(perpAngle) * adjustedOffset;
+        } else {
+            // Very sharp turn or end of path, use center position
+            this.x = centerPos.x;
+            this.y = centerPos.y;
+        }
+    }
+    
+    /**
+     * Calculate how sharp the current turn is (0.0 = straight, 1.0 = 90+ degrees)
+     */
+    private double calculateTurnSharpness() {
+        if (pathProgress < 0.05 || pathProgress > 0.95) return 0.0;
+        
+        Math2D.Point prevPos = path.getPositionAt(pathProgress - 0.05);
+        Math2D.Point currPos = path.getPositionAt(pathProgress);
+        Math2D.Point nextPos = path.getPositionAt(pathProgress + 0.05);
+        
+        if (Math2D.distance(prevPos.x, prevPos.y, currPos.x, currPos.y) > 1.0 &&
+            Math2D.distance(currPos.x, currPos.y, nextPos.x, nextPos.y) > 1.0) {
+            
+            double angle1 = Math2D.angle(prevPos.x, prevPos.y, currPos.x, currPos.y);
+            double angle2 = Math2D.angle(currPos.x, currPos.y, nextPos.x, nextPos.y);
+            
+            double angleDiff = Math.abs(angle1 - angle2);
+            while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+            
+            // Convert angle difference to sharpness (0-1)
+            return Math.min(1.0, Math.abs(angleDiff) / (Math.PI / 2));
+        }
+        
+        return 0.0;
     }
     
     /**
@@ -109,13 +216,13 @@ public abstract class Enemy {
         if (!alive) return;
         
         currentHp -= damage;
+        onTakeDamage(damage);
+        
         if (currentHp <= 0) {
             currentHp = 0;
             alive = false;
             onDeath();
         }
-        
-        onTakeDamage(damage);
     }
     
     /**

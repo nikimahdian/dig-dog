@@ -20,11 +20,13 @@ public abstract class Tower {
     protected double fireCooldown = 0.0;
     protected Enemy currentTarget = null;
     protected boolean alive = true;
+    protected com.tdgame.model.grid.BuildSlot buildSlot = null;
     
     public Tower(double range, int hp, double fireRate, int damage, int spriteIndex) {
         this.range = range;
         this.hp = hp;
         this.maxHp = hp;
+        // fireRate is already in shots per second, no conversion needed
         this.fireRate = fireRate;
         this.damage = damage;
         this.spriteIndex = spriteIndex;
@@ -57,11 +59,14 @@ public abstract class Tower {
         currentTarget = null;
         double bestPriority = -1;
         
+        // Convert tile range to pixel range (64 pixels per tile)
+        double pixelRange = range * 64.0;
+        
         for (Enemy enemy : enemies) {
             if (!isValidTarget(enemy)) continue;
             
             double distance = Math2D.distance(x, y, enemy.getX(), enemy.getY());
-            if (distance <= range) {
+            if (distance <= pixelRange) {
                 double priority = calculateTargetPriority(enemy, distance);
                 if (priority > bestPriority) {
                     bestPriority = priority;
@@ -111,12 +116,19 @@ public abstract class Tower {
      * Called when tower is destroyed
      */
     protected void onDestroyed() {
-        // Visual/audio feedback for tower destruction
+        // Clear the build slot so it becomes available again
+        if (buildSlot != null) {
+            buildSlot.clearSlot();
+        }
     }
     
     public void setPosition(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+    
+    public void setBuildSlot(com.tdgame.model.grid.BuildSlot buildSlot) {
+        this.buildSlot = buildSlot;
     }
     
     // Getters

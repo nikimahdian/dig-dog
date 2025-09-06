@@ -25,6 +25,9 @@ public class Rules {
         this.combatSystem = combatSystem;
         this.leakDefeatThreshold = config.getLeakDefeatThreshold();
         
+        // Calculate total enemy power at start
+        calculateTotalEnemyPower();
+        
         // Subscribe to enemy reached castle events
         EventBus.getInstance().subscribe(EventBus.EnemyReachedCastleEvent.class, this::onEnemyReachedCastle);
     }
@@ -46,6 +49,11 @@ public class Rules {
         if (waveManager.areAllWavesComplete() && !waveManager.hasLiveEnemies()) {
             victory = true;
             gameOver = true;
+            
+            // Trigger victory event
+            EventBus.getInstance().publish(new EventBus.GameOverEvent(true));
+            
+            System.out.println("🎉 VICTORY! All waves defeated!");
         }
     }
     
@@ -62,6 +70,11 @@ public class Rules {
             if (leakPercentage >= leakDefeatThreshold) {
                 victory = false;
                 gameOver = true;
+                
+                // Trigger defeat event
+                EventBus.getInstance().publish(new EventBus.GameOverEvent(false));
+                
+                System.out.println("💀 DEFEAT! " + String.format("%.1f%%", leakPercentage * 100) + " enemies reached castle! (Limit: " + String.format("%.1f%%", leakDefeatThreshold * 100) + ")");
             }
         }
     }
@@ -72,32 +85,45 @@ public class Rules {
     private void onEnemyReachedCastle(EventBus.EnemyReachedCastleEvent event) {
         leakedEnemyPower += event.damage;
         
-        // Also track total enemy power as enemies spawn
-        // This is a simplified approach - in a more complex system,
-        // we might track this when enemies are created
-        if (totalEnemyPower == 0) {
-            calculateTotalEnemyPower();
-        }
+        System.out.println("Enemy reached castle! Power: " + event.damage + 
+                          ", Total leaked: " + leakedEnemyPower + "/" + totalEnemyPower + 
+                          " (" + String.format("%.1f%%", getCurrentLeakPercentage() * 100) + ")");
     }
     
     /**
      * Calculate the total power of all enemies that will spawn
-     * This is called when the first enemy reaches the castle
      */
     private void calculateTotalEnemyPower() {
-        // This is a simplified calculation based on wave data
-        // In practice, you might want to calculate this when waves are loaded
-        totalEnemyPower = 1000; // Placeholder - should be calculated from wave configuration
+        totalEnemyPower = 0;
         
-        // More accurate calculation would iterate through all wave data:
-        /*
-        for (WaveData.Wave wave : config.getWaveData().waves) {
-            for (WaveData.EnemySpawn spawn : wave.enemies) {
-                Balance.EnemyStats stats = getEnemyStats(spawn.type);
-                totalEnemyPower += stats.power * spawn.count;
+        // Calculate from wave data
+        for (var wave : config.getWaveData().waves) {
+            for (var spawn : wave.enemies) {
+                int enemyPower = getEnemyPower(spawn.type);
+                totalEnemyPower += enemyPower * spawn.count;
+            }
+            
+            // Add aircraft power if wave has aircraft chance
+            if (wave.aircraftChance != null && wave.aircraftChance > 0) {
+                totalEnemyPower += 3; // Aircraft power (estimated)
             }
         }
-        */
+        
+        System.out.println("Total enemy power calculated: " + totalEnemyPower);
+    }
+    
+    /**
+     * Get enemy power by type
+     */
+    private int getEnemyPower(String type) {
+        return switch (type.toLowerCase()) {
+            case "soldier" -> 1;
+            case "soldierfast" -> 1;
+            case "soldierheavy" -> 1;
+            case "tank" -> 2;  
+            case "aircraft" -> 3;
+            default -> 1;
+        };
     }
     
     /**

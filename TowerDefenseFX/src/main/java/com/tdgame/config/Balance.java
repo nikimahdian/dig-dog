@@ -44,6 +44,8 @@ public class Balance {
         public TowerStats fast;
         @JsonProperty("power")
         public TowerStats power;
+        @JsonProperty("tank")
+        public TowerStats tank;
     }
     
     public static class TowerStats {
@@ -53,10 +55,14 @@ public class Balance {
         public double range;
         @JsonProperty("rpm")
         public int rpm;
+        @JsonProperty("fireRate")
+        public Double fireRate;
         @JsonProperty("damage")
         public int damage;
         @JsonProperty("hp")
         public int hp;
+        @JsonProperty("spriteIndex")
+        public Integer spriteIndex;
     }
     
     public static class AAConfig {
@@ -72,9 +78,11 @@ public class Balance {
         @JsonProperty("hitChance")
         public double hitChance;
         @JsonProperty("range")
-        public double range;
+        public Double range;
         @JsonProperty("hp")
-        public int hp;
+        public Integer hp;
+        @JsonProperty("spriteIndex")
+        public Integer spriteIndex;
     }
     
     public static class PlaceablesConfig {
@@ -95,11 +103,17 @@ public class Balance {
         public Integer damage;
         @JsonProperty("radius")
         public Double radius;
+        @JsonProperty("spriteIndex")
+        public Integer spriteIndex;
     }
     
     public static class EnemiesConfig {
         @JsonProperty("soldier")
         public EnemyStats soldier;
+        @JsonProperty("soldierFast")
+        public EnemyStats soldierFast;
+        @JsonProperty("soldierHeavy")
+        public EnemyStats soldierHeavy;
         @JsonProperty("tank")
         public EnemyStats tank;
         @JsonProperty("aircraft")
@@ -115,6 +129,10 @@ public class Balance {
         public int power;
         @JsonProperty("dpsVsDefenses")
         public Integer dpsVsDefenses;
+        @JsonProperty("range")
+        public Integer range;
+        @JsonProperty("fireRate")
+        public Double fireRate;
         @JsonProperty("spriteIndex")
         public int spriteIndex;
     }
@@ -122,6 +140,14 @@ public class Balance {
     public static class ProjectilesConfig {
         @JsonProperty("towerShot")
         public ProjectileStats towerShot;
+        @JsonProperty("bullet")
+        public ProjectileStats bullet;
+        @JsonProperty("tankShell")
+        public ProjectileStats tankShell;
+        @JsonProperty("aa60")
+        public ProjectileStats aa60;
+        @JsonProperty("aa80")
+        public ProjectileStats aa80;
     }
     
     public static class ProjectileStats {
@@ -141,6 +167,16 @@ public class Balance {
         public int[] ground;
         @JsonProperty("path")
         public int[] path;
+        @JsonProperty("sand")
+        public int[] sand;
+        @JsonProperty("buildSlot")
+        public int[] buildSlot;
+        @JsonProperty("speedSlot")
+        public int[] speedSlot;
+        @JsonProperty("bombSlot")
+        public int[] bombSlot;
+        @JsonProperty("rock")
+        public int[] rock;
         @JsonProperty("blocked")
         public int[] blocked;
         @JsonProperty("castle")
@@ -158,6 +194,8 @@ public class Balance {
         public int fast;
         @JsonProperty("power")
         public int power;
+        @JsonProperty("tank")
+        public int tank;
     }
     
     public static class AASprites {

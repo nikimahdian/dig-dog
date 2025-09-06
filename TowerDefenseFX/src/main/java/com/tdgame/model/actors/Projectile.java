@@ -17,6 +17,9 @@ public class Projectile {
     
     private boolean active = true;
     private boolean hitTarget = false;
+    private boolean showHitEffect = false;
+    private double hitEffectDuration = 0.0;
+    private final double HIT_EFFECT_TIME = 0.3;
     
     public Projectile(double startX, double startY, Enemy target, double speed, int damage, int spriteIndex) {
         this.x = startX;
@@ -33,6 +36,16 @@ public class Projectile {
      * Update projectile movement and check for collision
      */
     public void update(double deltaTime) {
+        // Update hit effect
+        if (showHitEffect) {
+            hitEffectDuration -= deltaTime;
+            if (hitEffectDuration <= 0) {
+                showHitEffect = false;
+                active = false;
+            }
+            return;
+        }
+        
         if (!active || hitTarget) return;
         
         // Update target position if target is still alive
@@ -62,7 +75,14 @@ public class Projectile {
         if (target != null && target.isAlive()) {
             target.takeDamage(damage);
         }
-        active = false;
+        
+        // Start hit effect
+        showHitEffect = true;
+        hitEffectDuration = HIT_EFFECT_TIME;
+        
+        // Move to target position for hit effect
+        x = targetX;
+        y = targetY;
     }
     
     /**
@@ -75,8 +95,17 @@ public class Projectile {
     // Getters
     public double getX() { return x; }
     public double getY() { return y; }
-    public int getSpriteIndex() { return spriteIndex; }
+    public int getSpriteIndex() { 
+        if (showHitEffect) {
+            return 285; // Hit effect sprite
+        }
+        return spriteIndex; 
+    }
     public boolean isActive() { return active; }
     public boolean hasHitTarget() { return hitTarget; }
     public Enemy getTarget() { return target; }
+    public boolean isShowingHitEffect() { return showHitEffect; }
+    public double getHitEffectIntensity() { 
+        return showHitEffect ? hitEffectDuration / HIT_EFFECT_TIME : 0.0;
+    }
 }

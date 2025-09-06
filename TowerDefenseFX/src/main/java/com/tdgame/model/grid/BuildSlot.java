@@ -29,6 +29,7 @@ public class BuildSlot {
             this.tower = tower;
             this.occupied = true;
             tower.setPosition(worldX, worldY);
+            tower.setBuildSlot(this);
         }
     }
     
@@ -37,7 +38,14 @@ public class BuildSlot {
             this.aaDefense = aa;
             this.occupied = true;
             aa.setPosition(worldX, worldY);
+            aa.setBuildSlot(this);
         }
+    }
+    
+    public void clearSlot() {
+        this.tower = null;
+        this.aaDefense = null;
+        this.occupied = false;
     }
     
     // Getters

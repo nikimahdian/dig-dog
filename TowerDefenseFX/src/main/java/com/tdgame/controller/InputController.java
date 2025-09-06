@@ -101,8 +101,10 @@ public class InputController {
     }
     
     public void handleMouseClick(MouseEvent event) {
-        double x = event.getX();
-        double y = event.getY();
+        // Convert screen coordinates to world coordinates (accounting for zoom)
+        double[] worldCoords = gameCanvas.screenToWorld(event.getX(), event.getY());
+        double x = worldCoords[0];
+        double y = worldCoords[1];
         
         // Check for build slot clicks
         BuildSlot buildSlot = game.getGridMap().findBuildSlotAt(x, y, 30);
@@ -222,6 +224,34 @@ public class InputController {
                     buildMenuController.tryBuild(BuildMenuController.BuildOption.AA_80, selectedSlot);
                     hideBuildMenu();
                 }
+            }
+            case PLUS, EQUALS -> {
+                // Zoom in
+                gameCanvas.zoomIn();
+            }
+            case MINUS -> {
+                // Zoom out
+                gameCanvas.zoomOut();
+            }
+            case R -> {
+                // Reset camera (zoom + pan)
+                gameCanvas.resetCamera();
+            }
+            case LEFT, A -> {
+                // Pan left
+                gameCanvas.panLeft();
+            }
+            case RIGHT, D -> {
+                // Pan right
+                gameCanvas.panRight();
+            }
+            case UP, W -> {
+                // Pan up
+                gameCanvas.panUp();
+            }
+            case DOWN, S -> {
+                // Pan down
+                gameCanvas.panDown();
             }
         }
     }

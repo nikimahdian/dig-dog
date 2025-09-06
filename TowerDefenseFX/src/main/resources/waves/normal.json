@@ -3,47 +3,64 @@
     { 
       "delay": 0,  
       "enemies": [ 
-        {"type":"soldier","count":10,"gap":0.6} 
+        {"type":"soldier","count":20,"gap":0.4} 
       ] 
     },
     { 
       "delay": 12, 
       "enemies": [ 
-        {"type":"soldier","count":12,"gap":0.5},
-        {"type":"tank","count":1,"gap":1.8} 
-      ] 
-    },
-    { 
-      "delay": 25, 
-      "enemies": [ 
-        {"type":"soldier","count":15,"gap":0.4},
-        {"type":"tank","count":2,"gap":1.2} 
+        {"type":"soldier","count":25,"gap":0.3},
+        {"type":"tank","count":2,"gap":1.5} 
       ],
-      "aircraftChance": 0.25 
+      "aircraftChance": 0.2
     },
     { 
-      "delay": 45, 
+      "delay": 30, 
       "enemies": [ 
-        {"type":"soldier","count":18,"gap":0.3},
-        {"type":"tank","count":2,"gap":1.0} 
+        {"type":"soldier","count":30,"gap":0.25},
+        {"type":"tank","count":4,"gap":1.2} 
       ],
-      "aircraftChance": 0.4 
+      "aircraftChance": 0.35 
     },
     { 
-      "delay": 65, 
+      "delay": 50, 
       "enemies": [ 
-        {"type":"soldier","count":20,"gap":0.25},
-        {"type":"tank","count":3,"gap":0.8} 
+        {"type":"soldier","count":35,"gap":0.2},
+        {"type":"tank","count":5,"gap":1.0} 
       ],
       "aircraftChance": 0.5 
     },
     { 
-      "delay": 85, 
+      "delay": 75, 
       "enemies": [ 
-        {"type":"soldier","count":25,"gap":0.2},
-        {"type":"tank","count":4,"gap":0.6} 
+        {"type":"soldier","count":40,"gap":0.18},
+        {"type":"tank","count":7,"gap":0.8} 
       ],
-      "aircraftChance": 0.6 
+      "aircraftChance": 0.65 
+    },
+    { 
+      "delay": 105, 
+      "enemies": [ 
+        {"type":"soldier","count":45,"gap":0.15},
+        {"type":"tank","count":8,"gap":0.7} 
+      ],
+      "aircraftChance": 0.75 
+    },
+    { 
+      "delay": 140, 
+      "enemies": [ 
+        {"type":"soldier","count":50,"gap":0.12},
+        {"type":"tank","count":10,"gap":0.6} 
+      ],
+      "aircraftChance": 0.85 
+    },
+    { 
+      "delay": 180, 
+      "enemies": [ 
+        {"type":"soldier","count":60,"gap":0.1},
+        {"type":"tank","count":12,"gap":0.5} 
+      ],
+      "aircraftChance": 1.0 
     }
   ]
 }

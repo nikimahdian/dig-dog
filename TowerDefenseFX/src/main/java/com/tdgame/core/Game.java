@@ -58,6 +58,7 @@ public class Game {
         combatSystem = new CombatSystem(config);
         economyManager = new EconomyManager(config);
         waveManager = new WaveManager(config, gridMap, combatSystem.getEnemies());
+        waveManager.setCombatSystem(combatSystem);
         aircraftStrikeSystem = new AircraftStrikeSystem(config, gridMap, combatSystem);
         rules = new Rules(config, waveManager, combatSystem);
         pathfinding = new Pathfinding(config, gridMap);
@@ -69,15 +70,49 @@ public class Game {
         inputController = new InputController(this, gameCanvas);
         
         BorderPane root = new BorderPane();
-        root.setCenter(gameCanvas.getCanvas());
+        
+        // Style the main game area
+        root.setStyle("""
+            -fx-background: linear-gradient(to bottom right, #0c0c0c, #1a1a2e, #16213e);
+            -fx-border-color: #4a90e2;
+            -fx-border-width: 2;
+        """);
+        
+        // Create game area with padding and styling
+        BorderPane gameArea = new BorderPane();
+        gameArea.setStyle("""
+            -fx-background-color: rgba(0,0,0,0.3);
+            -fx-border-color: #2c3e50;
+            -fx-border-width: 2;
+            -fx-border-radius: 10;
+            -fx-background-radius: 10;
+        """);
+        gameArea.setCenter(gameCanvas.getCanvas());
+        
+        root.setCenter(gameArea);
         root.setTop(hud.getRoot());
         
-        Scene scene = new Scene(root, 1200, 800);
+        // Add some padding around the game
+        BorderPane.setMargin(gameArea, new javafx.geometry.Insets(10, 10, 10, 10));
+        
+        Scene scene = new Scene(root, 1800, 1100);
+        
+        // Add global styling
+        scene.getStylesheets().add("data:text/css," +
+            "* { -fx-font-family: 'Arial'; }" +
+            ".button { -fx-font-weight: bold; }");
+        
         stage.setScene(scene);
         
         // Setup input handling - make sure canvas can receive focus
         gameCanvas.getCanvas().setFocusTraversable(true);
         gameCanvas.getCanvas().setOnMouseClicked(inputController::handleMouseClick);
+        
+        // Mouse wheel zoom support
+        gameCanvas.getCanvas().setOnScroll(event -> {
+            gameCanvas.handleZoom(event.getDeltaY());
+        });
+        
         scene.setOnKeyPressed(inputController::handleKeyPress);
         
         // Focus the canvas so it can receive key events
@@ -106,6 +141,10 @@ public class Game {
             Time.reset();
             economyManager.start();
             waveManager.start();
+            
+            // Subscribe to game over events
+            EventBus.getInstance().subscribe(EventBus.GameOverEvent.class, this::onGameOver);
+            
             gameLoop.start();
         }
     }
@@ -178,27 +217,67 @@ public class Game {
     private void handleGameOver(boolean victory) {
         pause();
         
-        String title = victory ? "Victory!" : "Defeat!";
-        String message = victory ? 
-            "Congratulations! You successfully defended against all enemy waves!" :
-            "Game Over! Too many enemies reached the castle.";
-        
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(title);
-        alert.setContentText(message);
-        alert.getButtonTypes().setAll(ButtonType.OK);
-        
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                // Return to main menu
-                stop();
-                stage.close();
-                // In a full implementation, you'd return to the main menu here
+        javafx.application.Platform.runLater(() -> {
+            Alert alert = new Alert(victory ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
+            
+            if (victory) {
+                alert.setTitle("🎉 VICTORY!");
+                alert.setHeaderText("🏆 Congratulations, Commander!");
+                alert.setContentText("🏰 You have successfully defended the castle!\n" +
+                                      "🌊 All " + waveManager.getTotalWaves() + " enemy waves defeated!\n" +
+                                      "🛡️ Castle defense: " + String.format("%.1f%%", (1.0 - rules.getCurrentLeakPercentage()) * 100) + " successful!");
+                
+                // Victory styling
+                alert.getDialogPane().setStyle("""
+                    -fx-background-color: linear-gradient(to bottom, #27ae60, #2ecc71);
+                    -fx-text-fill: white;
+                    -fx-font-weight: bold;
+                    -fx-font-size: 14px;
+                """);
+            } else {
+                alert.setTitle("💀 DEFEAT!");
+                alert.setHeaderText("🚨 Castle Defense Failed!");
+                alert.setContentText("💥 Too many enemies breached your defenses!\n" + 
+                                      "📊 Enemy leakage: " + String.format("%.1f%%", rules.getCurrentLeakPercentage() * 100) + 
+                                      " (Limit: " + String.format("%.1f%%", rules.getLeakDefeatThreshold() * 100) + ")\n" +
+                                      "⚔️ Wave reached: " + waveManager.getCurrentWaveNumber() + "/" + waveManager.getTotalWaves());
+                
+                // Defeat styling  
+                alert.getDialogPane().setStyle("""
+                    -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+                    -fx-text-fill: white;
+                    -fx-font-weight: bold;
+                    -fx-font-size: 14px;
+                """);
             }
+            
+            alert.getButtonTypes().clear();
+            alert.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            
+            // Custom button text
+            ((javafx.scene.control.Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("🏠 Main Menu");
+            ((javafx.scene.control.Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("🔄 Try Again");
+            
+            alert.showAndWait().ifPresent(response -> {
+                stop();
+                if (response == ButtonType.OK) {
+                    // Go back to main menu
+                    stage.close();
+                } else if (response == ButtonType.CANCEL) {
+                    // Restart game (close and let user restart)
+                    stage.close();
+                }
+            });
         });
     }
     
+    /**
+     * Handle game over events from EventBus
+     */
+    private void onGameOver(EventBus.GameOverEvent event) {
+        handleGameOver(event.victory);
+    }
+
     // Getters for systems (used by controllers)
     public GameConfig getConfig() { return config; }
     public GridMap getGridMap() { return gridMap; }

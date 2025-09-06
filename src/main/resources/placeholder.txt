@@ -1,0 +1,13 @@
+This is a placeholder for the Kenney Tower Defense assets.
+
+To complete the game setup:
+1. Download the Kenney Tower Defense pack from: https://kenney.nl/assets/tower-defense-pack
+2. Extract the "Default size" folder containing PNG files like:
+   - towerDefense_tile004.png
+   - towerDefense_tile005.png
+   - towerDefense_tile009.png
+   - ... and all other tiles numbered up to ~299
+
+3. Place these PNG files in the "Default size/" directory within src/main/resources/
+
+The game will use these specific PNG files as defined in Config.java's ASSET_MAP.

@@ -45,7 +45,8 @@ public class Bomb {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive() && !enemy.hasReachedEnd()) {
                 double distance = Math2D.distance(x, y, enemy.getX(), enemy.getY());
-                if (distance <= radius * 0.5) { // Trigger when enemy is halfway into explosion radius
+                double triggerRange = radius * 64; // Convert tile radius to pixels
+                if (distance <= triggerRange) {
                     explode(enemies);
                     break;
                 }
@@ -66,7 +67,8 @@ public class Bomb {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive() && !enemy.hasReachedEnd()) {
                 double distance = Math2D.distance(x, y, enemy.getX(), enemy.getY());
-                if (distance <= radius) {
+                double explosionRange = radius * 64 * 1.2; // Larger explosion range to cover lanes
+                if (distance <= explosionRange) {
                     enemy.takeDamage(damage);
                 }
             }

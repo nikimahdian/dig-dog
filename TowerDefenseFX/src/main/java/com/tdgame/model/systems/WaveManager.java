@@ -20,6 +20,7 @@ public class WaveManager {
     private final GameConfig config;
     private final GridMap gridMap;
     private final List<Enemy> enemies;
+    private CombatSystem combatSystem;
     
     private List<WaveData.Wave> waves;
     private int currentWaveIndex = 0;
@@ -34,6 +35,9 @@ public class WaveManager {
     private int currentSpawnIndex = 0;
     private int enemiesSpawnedInCurrentGroup = 0;
     
+    // Lane alternation for soldiers
+    private int nextLane = 0; // 0 or 1
+    
     // Aircraft strike tracking
     private boolean aircraftStrikeTriggered = false;
     
@@ -42,6 +46,10 @@ public class WaveManager {
         this.gridMap = gridMap;
         this.enemies = enemies;
         this.waves = config.getWaveData().waves;
+    }
+    
+    public void setCombatSystem(CombatSystem combatSystem) {
+        this.combatSystem = combatSystem;
     }
     
     public void start() {
@@ -70,8 +78,8 @@ public class WaveManager {
             updateEnemySpawning(deltaTime);
         }
         
-        // Check if current wave is complete
-        if (waveStarted && remainingSpawns.isEmpty() && currentSpawnIndex >= currentWave.enemies.size()) {
+        // Check if current wave is complete (all enemy types spawned)
+        if (waveStarted && currentSpawnIndex >= currentWave.enemies.size()) {
             completeCurrentWave();
         }
     }
@@ -80,20 +88,16 @@ public class WaveManager {
      * Schedule the next wave to start
      */
     private void scheduleNextWave() {
-        if (currentWaveIndex >= waves.size()) {
-            allWavesComplete = true;
-            return;
+        if (currentWaveIndex < waves.size()) {
+            currentWave = waves.get(currentWaveIndex);
+            waveStarted = false;
+            aircraftStrikeTriggered = false;
+            
+            // Reset spawning state
+            currentSpawnIndex = 0;
+            enemiesSpawnedInCurrentGroup = 0;
+            spawnTimer = 0.0;
         }
-        
-        currentWave = waves.get(currentWaveIndex);
-        waveStarted = false;
-        aircraftStrikeTriggered = false;
-        
-        // Reset spawn state
-        remainingSpawns.clear();
-        currentSpawnIndex = 0;
-        enemiesSpawnedInCurrentGroup = 0;
-        spawnTimer = 0.0;
     }
     
     /**
@@ -103,6 +107,7 @@ public class WaveManager {
         waveStarted = true;
         
         // Copy enemy spawns to remaining list
+        remainingSpawns.clear();
         remainingSpawns.addAll(currentWave.enemies);
         
         EventBus.getInstance().publish(new EventBus.WaveStartedEvent(currentWaveIndex + 1));
@@ -138,6 +143,16 @@ public class WaveManager {
         Enemy enemy = createEnemy(spawn.type);
         if (enemy != null) {
             enemy.setPath(gridMap.getMainPath());
+            
+            // Set lane for soldiers (alternate lanes), tanks use center
+            if (enemy instanceof Soldier || enemy instanceof SoldierFast || enemy instanceof SoldierHeavy) {
+                enemy.setLane(nextLane);
+                nextLane = 1 - nextLane; // Alternate between 0 and 1
+            } else if (enemy instanceof Tank) {
+                enemy.setLane(0); // Tanks always center (lane offset = 0)
+            }
+            // Aircraft don't use paths
+            
             enemies.add(enemy);
         }
         
@@ -166,6 +181,8 @@ public class WaveManager {
         
         return switch (type.toLowerCase()) {
             case "soldier" -> new Soldier(enemies.soldier);
+            case "soldierfast" -> new SoldierFast(enemies.soldierFast);
+            case "soldierheavy" -> new SoldierHeavy(enemies.soldierHeavy);
             case "tank" -> new Tank(enemies.tank);
             case "aircraft" -> new Aircraft(enemies.aircraft);
             default -> {
@@ -182,11 +199,12 @@ public class WaveManager {
         if (aircraftStrikeTriggered) return;
         
         // Create aircraft enemy
-        Enemy aircraft = createEnemy("aircraft");
-        if (aircraft != null) {
-            aircraft.setPath(gridMap.getMainPath());
+        Enemy aircraftEnemy = createEnemy("aircraft");
+        if (aircraftEnemy instanceof Aircraft aircraft) {
+            aircraft.setCombatSystem(combatSystem, config);
             enemies.add(aircraft);
             aircraftStrikeTriggered = true;
+            
         }
     }
     
@@ -197,10 +215,13 @@ public class WaveManager {
         waveStarted = false;
         currentWaveIndex++;
         
+        System.out.println("Wave " + currentWaveIndex + " completed! Total waves: " + waves.size());
+        
         if (currentWaveIndex < waves.size()) {
             scheduleNextWave();
         } else {
             allWavesComplete = true;
+            System.out.println("🎉 All waves completed! Victory should trigger.");
         }
     }
     
@@ -212,10 +233,12 @@ public class WaveManager {
     }
     
     /**
-     * Get current wave number (1-based)
+     * Get current wave number (1-indexed)
      */
     public int getCurrentWaveNumber() {
-        return waveStarted ? currentWaveIndex + 1 : currentWaveIndex;
+        // Don't show wave number higher than total waves
+        int waveNumber = currentWaveIndex + 1;
+        return Math.min(waveNumber, waves.size());
     }
     
     /**
@@ -226,7 +249,25 @@ public class WaveManager {
     }
     
     /**
-     * Check if any enemies are still alive
+     * Get remaining enemies in current wave
+     */
+    public int getRemainingEnemiesInWave() {
+        if (!waveStarted || currentWave == null) return 0;
+        
+        int remaining = 0;
+        for (int i = currentSpawnIndex; i < remainingSpawns.size(); i++) {
+            WaveData.EnemySpawn spawn = remainingSpawns.get(i);
+            if (i == currentSpawnIndex) {
+                remaining += spawn.count - enemiesSpawnedInCurrentGroup;
+            } else {
+                remaining += spawn.count;
+            }
+        }
+        return remaining;
+    }
+    
+    /**
+     * Check if there are live enemies on the map
      */
     public boolean hasLiveEnemies() {
         return enemies.stream().anyMatch(Enemy::isAlive);

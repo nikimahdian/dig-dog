@@ -1,32 +1,62 @@
 {
-  "name": "Level 1",
-  "tileset": "assets/kenney/PNG/Default size/",
-  "grid": { "cols": 20, "rows": 12, "tileSize": 48 },
+  "name": "🏰 Elite Defense Arena",
+  "tileset": "kenney_tower-defense-top-down/PNG/Default size/",
+  "grid": { "cols": 14, "rows": 10, "tileSize": 64 },
   "buildSlots": [ 
-    {"col":5,"row":3}, 
-    {"col":8,"row":6}, 
-    {"col":12,"row":7},
-    {"col":15,"row":4},
-    {"col":7,"row":9},
-    {"col":11,"row":2}
+    {"col":2,"row":1}, {"col":3,"row":1}, {"col":4,"row":1}, {"col":5,"row":1},
+    {"col":2,"row":4}, {"col":3,"row":4}, {"col":4,"row":4}, {"col":5,"row":4},
+    {"col":9,"row":1}, {"col":10,"row":1}, {"col":11,"row":1},
+    {"col":8,"row":2}, {"col":8,"row":1}, {"col":8,"row":3},
+    {"col":8,"row":4}, {"col":9,"row":5}, {"col":10,"row":5}, {"col":11,"row":5},
+    {"col":8,"row":7}, {"col":9,"row":7}, {"col":10,"row":7}, {"col":11,"row":7},
+    {"col":6,"row":7}, {"col":7,"row":7},
+    {"col":1,"row":8}, {"col":1,"row":7}, {"col":1,"row":6}
   ],
   "speedBumpSlots": [ 
-    {"col":9,"row":6}, 
-    {"col":10,"row":6},
-    {"col":13,"row":8},
-    {"col":14,"row":8}
+     {"col":6,"row":6}, {"col":13,"row":3}, {"col":7,"row":4}
   ],
   "bombSlots": [ 
-    {"col":14,"row":7},
-    {"col":16,"row":8}
+    {"col":6,"row":3}, {"col":7,"row":6}
   ],
   "paths": [
     { 
       "name":"main", 
-      "waypoints": [ 
-        [0,6], [6,6], [6,8], [13,8], [13,5], [19,5] 
+      "waypoints": [
+        [0,0], [1,0], [2,0], [3,0], [4,0], [5,0], [6,0], [6,1], [6,2], [6,3], [6,4], [6,5], [6,6], [7,6], [8,6], [9,6], [10,6], [11,6], [12,6], [13,6], [13,5], [13,4], [13,3], [13,2], [13,1], [13,0], [12,0], [11,0], [10,0], [9,0], [8,0], [7,0], [7,1], [7,2], [7,3], [7,4], [7,5], [6,5], [5,5], [4,5], [3,5], [2,5], [1,5], [0,5], [0,6], [0,7], [0,8], [0,9]
       ] 
     }
   ],
-  "castle": { "col":19, "row":5, "hp": 1000 }
+  "castle": { "col":0, "row":9, "hp": 1500 },
+  "manualTiles": [
+    [
+      {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 46, "rotation": 180}, {"tileIndex": 46, "rotation": 90}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 1, "rotation": 0}, {"tileIndex": 46, "rotation": 180}
+    ],
+    [
+      {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}, {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}
+    ],
+    [
+      {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}, {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}
+    ],
+    [
+      {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}, {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}
+    ],
+    [
+      {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 47, "rotation": 0}, {"tileIndex": 47, "rotation": 0}, {"tileIndex": 47, "rotation": 0}, {"tileIndex": 47, "rotation": 0}, {"tileIndex": 25, "rotation": 0}, {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}
+    ],
+    [
+      {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 2, "rotation": 90}, {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 0}
+    ],
+    [
+      {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 2, "rotation": 90}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 25, "rotation": 90}, {"tileIndex": 2, "rotation": 90}
+    ],
+    [
+      {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}
+    ],
+    [
+      {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}
+    ],
+    [
+      {"tileIndex": 23, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}, {"tileIndex": 119, "rotation": 0}
+    ]
+  ]
 }
